@@ -39,6 +39,43 @@ Theta2_grad = zeros(size(Theta2));
 %         cost function computation is correct by verifying the cost
 %         computed in ex4.m
 %
+
+%size(X)  % 5000 x 400
+%size(y)  % 5000 x 1
+%size(Theta1) % 25 x 401
+%size(Theta2) % 10 x 26 
+
+% Input -> Hidden
+
+z2 = [ones(m,1), X] * Theta1';
+
+a2 = [ones(m,1), sigmoid(z2)];
+
+z3 = a2 * Theta2';
+
+a3 = sigmoid(z3); % 5000 x 10
+
+size(a3)
+
+% y(k) - the great trick - we need to recode the labels as vectors containing only values 0 or 1 (page 5 of ex4.pdf)
+yk = zeros(num_labels, m); % 10 x 5000 
+for i=1:m,
+  yk(y(i),i)=1;
+end
+
+s1 = -yk' .* log(a3);
+s2 = - (1 - yk') .* log(1-a3);
+
+s = sum( sum( (1/m) * sum((s1 + s2)) ) ); % sum over 10 x 5000
+
+% regularize theta by removing first value
+%theta_reg = [0;theta(2:end, :)];
+
+%r = (lambda / (2 * m)) * (theta_reg' * theta_reg);
+r = 0;
+
+J = s + r;
+
 % Part 2: Implement the backpropagation algorithm to compute the gradients
 %         Theta1_grad and Theta2_grad. You should return the partial derivatives of
 %         the cost function with respect to Theta1 and Theta2 in Theta1_grad and
