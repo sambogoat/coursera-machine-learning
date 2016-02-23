@@ -55,9 +55,8 @@ z3 = a2 * Theta2';
 
 a3 = sigmoid(z3); % 5000 x 10
 
-size(a3)
-
-% y(k) - the great trick - we need to recode the labels as vectors containing only values 0 or 1 (page 5 of ex4.pdf)
+% y(k) - the great trick - we need to recode the labels as vectors 
+% containing only values 0 or 1 (page 5 of ex4.pdf)
 yk = zeros(num_labels, m); % 10 x 5000 
 for i=1:m,
   yk(y(i),i)=1;
@@ -66,13 +65,21 @@ end
 s1 = -yk' .* log(a3);
 s2 = - (1 - yk') .* log(1-a3);
 
-s = sum( sum( (1/m) * sum((s1 + s2)) ) ); % sum over 10 x 5000
-
-% regularize theta by removing first value
-%theta_reg = [0;theta(2:end, :)];
+s = sum(sum((1/m) * sum((s1 + s2)))); % sum over 10 x 5000
 
 %r = (lambda / (2 * m)) * (theta_reg' * theta_reg);
-r = 0;
+
+Theta1_reg = Theta1(:,2:end);
+% size(Theta1_reg) % 25 x 400
+% r1 = sum(sum( Theta1_reg * Theta1_reg'));
+r1 = sum(sum( Theta1_reg.^2));
+
+Theta2_reg = Theta2(:,2:end);
+% size(Theta2_reg) % 10 x 25
+% r2 = sum(sum(Theta2_reg * Theta2_reg'));
+r2 = sum(sum( Theta2_reg.^2));
+
+r = (lambda / (2 * m)) * (r1 + r2);
 
 J = s + r;
 

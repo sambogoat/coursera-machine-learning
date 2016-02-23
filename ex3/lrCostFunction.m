@@ -40,9 +40,9 @@ grad = zeros(size(theta));
 size(X)
 size(theta)
 
-h = sigmoid(X * theta);
-s1 = -y' * log(h);
-s2 = - (1 - y') * log(1-h);
+h = sigmoid(X * theta); % [ # items in training set x 1 ]
+s1 = -y' * log(h);  % [ 1 x 1 ]
+s2 = - (1 - y') * log(1-h); % [ 1 x 1 ]
 s = (1/m) * (s1 + s2);
 
 % regularize theta by removing first value
