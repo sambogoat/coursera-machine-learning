@@ -47,7 +47,7 @@ Theta2_grad = zeros(size(Theta2));
 
 % Input -> Hidden
 
-z2 = [ones(m,1), X] * Theta1';
+z2 = [ones(m,1), X] * Theta1'; % 5000 x 25
 
 a2 = [ones(m,1), sigmoid(z2)];
 
@@ -64,19 +64,16 @@ end
 
 s1 = -yk' .* log(a3);
 s2 = - (1 - yk') .* log(1-a3);
-
 s = sum(sum((1/m) * sum((s1 + s2)))); % sum over 10 x 5000
 
-%r = (lambda / (2 * m)) * (theta_reg' * theta_reg);
+% Regularisation Term
 
 Theta1_reg = Theta1(:,2:end);
 % size(Theta1_reg) % 25 x 400
-% r1 = sum(sum( Theta1_reg * Theta1_reg'));
 r1 = sum(sum( Theta1_reg.^2));
 
 Theta2_reg = Theta2(:,2:end);
 % size(Theta2_reg) % 10 x 25
-% r2 = sum(sum(Theta2_reg * Theta2_reg'));
 r2 = sum(sum( Theta2_reg.^2));
 
 r = (lambda / (2 * m)) * (r1 + r2);
@@ -98,6 +95,36 @@ J = s + r;
 %               over the training examples if you are implementing it for the 
 %               first time.
 %
+
+
+X = [ones(m,1), X];
+
+for t=1:m,
+
+    a1 = X(t,:); % 1 x 401
+    
+    z2 = Theta1 * a1'; % 25 x 1
+    
+    a2 = [1;sigmoid(z2)]; % 26 x 1
+        
+    z3 = Theta2 * a2; % 10 x 1
+    
+    a3 = sigmoid(z3); % 10 x 1
+    
+    delta_3 = a3 - yk(:,t); % 10 x 1
+        
+    delta_2 = (Theta2(:,2:end)' * delta_3) .* sigmoidGradient(z2);  % 25 x 1
+        
+    Theta2_grad = Theta2_grad + delta_3 * a2';
+    
+    Theta1_grad = Theta1_grad + delta_2 * a1;
+    
+end
+
+Theta1_grad = Theta1_grad / m
+
+Theta2_grad = Theta2_grad / m
+
 % Part 3: Implement regularization with the cost function and gradients.
 %
 %         Hint: You can implement this around the code for
