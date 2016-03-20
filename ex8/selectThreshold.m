@@ -25,15 +25,19 @@ for epsilon = min(pval):stepsize:max(pval)
 
 
 
+    anom = pval < epsilon;
 
+    tp = sum(anom == 1 & yval == 1);
+    
+    fp = sum(anom == 1 & yval == 0);
+    
+    fn = sum(anom == 0 & yval == 1);
 
-
-
-
-
-
-
-
+    prec = tp / (tp + fp);
+    
+    rec = tp / (tp + fn);
+    
+    F1 = (2 * prec * rec) / (prec + rec);
 
     % =============================================================
 
